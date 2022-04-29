@@ -1,8 +1,7 @@
 #################################################################
 # Molly McDermott
 # created 9/16/21
-# edited 4/22/22
-# Analysis of BSM field experiment - female physiology and foraging ranges of tagged birds
+# processes field data, and analyzed physiological and reproductive outcomes associated with brood size manipulation and range size
 ####################################################################
 
 #### SET UP ####

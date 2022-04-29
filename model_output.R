@@ -1,7 +1,6 @@
 ################################################################################
 # Molly McDermott
 # Created 9/3/21
-# edited 4/22/22
 # script tidies model output (lmer or glmer) and produces a table in excel and a figure with model estimates
 ################################################################################
 

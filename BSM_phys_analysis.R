@@ -1,8 +1,7 @@
 #################################################################
 # Molly McDermott
 # created 1/11/21
-# edited 4/22/22
-# Analysis of BSM field experiment - female physiology
+# processes field data, and analyzes physiological and reproductive outcomes associated with brood size manipulation and GPS tagging
 ################################################################
 
 #### SET UP ####
