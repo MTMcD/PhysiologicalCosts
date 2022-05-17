@@ -46,7 +46,7 @@ setwd("~/SafranLab/PhysiologicalCosts")
 #read in physiology dataset
 df <- read.csv("BSM_FemalePhys_wide.csv")
 
-#summarize dataset to find out how many days I have for each bird, and then join with phys dataset
+#summarize dataset to find out how many days for each bird, and then join with phys dataset
 date_sum <- tbl %>%
   group_by(nest, site, tag) %>%
   summarize(min_date = min(Date), max_date = max(Date))
@@ -95,20 +95,20 @@ GPS_age %>%
 
 
 #### CALCULATE RANGE SIZE ####
+setwd("~/SafranLab/PhysiologicalCosts")
 GPS_age <- read.csv("filteredGPS19-20.csv")
 
 
 #Select only relevant columns
 GPS <- GPS_age %>%
   select(Band, GPS_tag, Day9, Day10, year, site, nest, 
-         `RTC-date`, `RTC-time`, Latitude, Longitude, HDOP)
+         RTC.date, RTC.time, Latitude, Longitude, HDOP)
 
 
 #Remove rows with NAs because otherwise the MCP function won't work
 GPS <- GPS[!is.na(GPS$Latitude) & !is.na(GPS$Longitude),]
 
 #Only include ID and coordinates (MCP can't take any other info)
-library(dplyr)
 GPS_mcp <- dplyr::select(GPS, Band, Latitude, Longitude)
 
 
@@ -143,13 +143,12 @@ colnames(forranges100) <- c("band", "foraging_area100")
 forranges100 <- data.frame(forranges100)
 
 
-#Look at MCP by percentile--this shows you have the MCP calculation changes
+#Look at MCP by percentile--this shows you how the MCP calculation changes
 #depending on the percentage of points included
 par("mar")
 par(mar=c(1,1,1,1))
 areas <- mcp.area(gpsEN, percent = seq(50, 100, by = 5))
 
-#Link up with physiology dataset
 
 
 #### MAPS ####
@@ -157,35 +156,34 @@ areas <- mcp.area(gpsEN, percent = seq(50, 100, by = 5))
 library(ggmap)
 
 # get basemap
-mybasemap <- get_stamenmap(bbox = c(left = min(GPS@coords[,1])-0.005, 
-                                    bottom = min(GPS@coords[,2])-0.005, 
-                                    right = max(GPS@coords[,1])+0.005, 
-                                    top = max(GPS@coords[,2])+0.005), 
-                           maptype = "toner",
-                           zoom = 12)
+# note: a Google Maps API is needed to load the basemap
+boco12 <- get_googlemap(center = c(lon = -105.22, lat = 40.07), 
+                        zoom = 12, maptype = "satellite")
 
 #Turn the spatial data frame of points into just an R data frame for plotting in ggmap
-GPSdf <- data.frame(GPS@coords, 
-                           id = GPS@data$band)
+GPSdf <- data.frame(GPS_mcp@coords, 
+                           id = GPS_mcp@data$Band)
 
 #Create the map with foraging range polygons! 
-mymap.hr <- ggmap(mybasemap) + 
+mymap.hr <- ggmap(boco12) + 
   geom_polygon(data = fortify(GPSMCPs),  
                # Polygon layer needs to be "fortified" to add geometry to the dataframe
                aes(long, lat, colour = id, fill = id),
-               alpha = 0.3) + 
+               alpha = 0.5) + 
   geom_point(data = GPSdf, 
              aes(x = Longitude, y = Latitude, colour = id, shape = id),
-             size = 4)  +
+             size = 2)  +
   scale_shape_manual(values = c(0,1,2,
                                 0,1,2,
                                 0,1,2,
                                 0,1,2,
                                 0,1,2,
                                 0,1,2,
-                                0))
+                                0)) +
+  labs(x = "Longitude", y = "Latitude") +
+  theme(legend.title = element_blank())
 
-pdf("RangeSize_After_bw.pdf", width = 6.5, height = 8)
+pdf("RangeSize_After_google.pdf", width = 6.5, height = 8)
 mymap.hr
 dev.off()
 
