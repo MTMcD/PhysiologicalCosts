@@ -8,7 +8,7 @@ BSM_FemalePhys.csv: a subset of physiological and reproductive information about
 
 SiteKey.csv: a list of breeding sites and corresponding grouping regions
 
-BARS_GPS_area.csv: processed GPS data containing data on range size for each tagged individual
+filteredGPS19-20.csv: processed GPS data containing data on range size for each tagged individual
 
 ## Scripts
 BSM_phys_analysis.R: processes field data, and analyzes physiological and reproductive outcomes associated with brood size manipulation and GPS tagging
